@@ -1,14 +1,14 @@
 import styles from './LoginOptionsPage.module.scss';
 
-import Icon from '../../atoms/Icon/Icon';
-import LoginOptions from '../../molecules/LoginOptions/LoginOptions';
+import LoginOptions from '../../molecules/LoginOptions/index';
 
-import logo from '../../resoruces/RemotHQLogo.jpg';
+import classNames from 'classnames/bind';
+
+const cx=classNames.bind(styles);
 
 function LoginOptionsPage (props:LoginOptionsPageProps) {
     return (
-      <div className={styles.loginOptionsPageDiv}>
-        {/* <Icon  icon={logo} altText='Logo' width={45} /> */}
+      <div className={cx('loginOptionsPageDiv')}>
         <LoginOptions />
       </div>
     );

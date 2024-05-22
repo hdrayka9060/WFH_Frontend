@@ -24,11 +24,21 @@
     cursor: pointer;
 }
 
+.loginFormSelectPicker{
+    width: 330px;
+    display: block;
+    margin: auto;
+    border-radius: 10px;
+    padding: 10px 15px;
+    font-size: 16px;
+
+}
+
 .loginFormInput{
     width: 300px;
     display: block;
     margin: auto;
-    margin-top: 20px;
+    margin-top: 8px;
     border-radius: 10px;
     padding: 10px 15px;
     border: 1px solid rgb(203, 201, 201);
@@ -43,4 +53,19 @@
     font-size: 16px;
     border-radius: 10px;
     margin-top: 30px;
+}
+
+.lebal{
+    font-size: 12px;
+    font-weight: 500;
+    display: block;
+    // border: 1px solid black;
+    width: 290px;
+    text-align: left;
+    margin: auto;
+    // padding: 5px 1;
+    margin-top: 30px;
+}
+.estric{
+    color:red
 }

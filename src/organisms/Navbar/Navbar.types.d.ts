@@ -1,3 +1,5 @@
 interface NavbarProps{
-    userType:string
+    userType:string,
+    // wfh:number|undefined,
+    // maxWfh:number|undefined
 }

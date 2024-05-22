@@ -1,0 +1,43 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+
+.popupDiv{
+    font-family: "Inter", sans-serif;
+    margin: 25px auto;
+    text-align: left;
+    border: 1px solid rgb(220, 220, 220);
+    width: 550px;
+    padding: 20px 10px 20px 40px;
+    background-color: rgb(255, 255, 255);    
+    border-radius: 20px;
+}
+
+.popupStackButtonItem{
+    width: 100%;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+}
+
+.popupHeading{
+    // margin-bottom: 10px;
+}
+
+.popupLabel{
+
+}
+
+.popupLableSpan{
+    font-weight: 600;
+}
+
+.popupCancel{
+    width: 125px;
+    color: white;
+    background-color: rgb(255, 255, 255);
+    font-weight: 600;
+    font-size: 16px;
+    border-radius: 10px;
+    margin: 10px 30px;    
+    color:black;
+    border: 1px solid rgb(160, 160, 160);
+}
