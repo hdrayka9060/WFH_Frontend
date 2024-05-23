@@ -18,6 +18,7 @@ export interface TableResponseObject{
 export interface AdminRequestsListTableData{
     name:string,
     email:string,
+		wfhReason:string,
     wfh:string,
     requestStatus:string,
     availedAt:Date,
@@ -27,7 +28,8 @@ export interface AdminRequestsListTableData{
 export interface AdminRequestsListTableResponseObject{
     status:number,
     data:AdminRequestsListTableData[],
-    message:string
+    message:string,
+		totalRecords:number
 }
 
 
@@ -44,7 +46,8 @@ export interface SystemOrganisationDataTableData{
 export interface SystemOrganisationDataTableResponseObject{
     status:number,
     data:SystemOrganisationDataTableData[],
-    message:string
+    message:string,
+		totalRecords:number
 }
 
 export interface SystemOrganisationListTableData{
@@ -57,7 +60,8 @@ export interface SystemOrganisationListTableData{
 export interface SystemOrganisationListTableResponseObject{
     status:number,
     data:SystemOrganisationListTableData[],
-    message:string
+    message:string,
+		totalRecords:number
 }
 
 export interface SystemVerificationResponseObject{
@@ -100,7 +104,7 @@ export interface EditOrganisationParameters{
     organisationUniqueName:string | undefined,
     organisationNewUniqueName:string | undefined,
     organisationNewDisplayName:string | undefined,
-    organisationNewAdmin:string | undefined,
+    organisationNewAdmin:string|undefined,
     organisationNewMaxWfh:number | undefined
 }
 
@@ -123,6 +127,7 @@ export interface CalendarData{
     createdAt: Date,
     approvalAt: Date,
     requestStatus:string,
+		wfhReason:string,
     rejectionReason:string
 }
 

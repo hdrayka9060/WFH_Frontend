@@ -9,6 +9,7 @@ export interface RequestStatusPopupProps{
     createdAt: Date,
     approvalAt: Date,
     requestStatus:string,
+		submissionReason:string,
     rejectionReason:string,
     toggle:boolean
 }

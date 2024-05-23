@@ -15,12 +15,15 @@ export interface TableHead{
 }
 
 export interface TablePlotProps{
-    
+
     head:TableHead
     setOrganisation:(value:stirng)=>void,
     data:SystemOrganisationDataTableData[],
     changeData:(data:SystemOrganisationDataTableData[])=>void,
-
+		limit:number,
+		page:number,
+		setLimit:(num:number)=>void,
+		setPage:(num:number)=>void
 }
 
 export interface TableData{
@@ -61,7 +64,8 @@ export interface SystemOrganisationDataTableData{
 export interface SystemOrganisationDataTableResponseObject{
     status:number,
     data:SystemOrganisationDataTableData[],
-    message:string
+    message:string,
+		totalRecords:number
 }
 
 export interface AdminRequestsListTableData{

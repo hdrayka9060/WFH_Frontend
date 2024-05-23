@@ -8,7 +8,7 @@
     border: 1px solid rgb(220, 220, 220);
     width: 600px;
     padding: 20px 10px;
-    background-color: rgb(255, 255, 255);    
+    background-color: rgb(255, 255, 255);
     border-radius: 20px;
 
 }
@@ -45,24 +45,22 @@
 
 .popupSubmit{
     width: 125px;
-    color: white;
     background-color: rgb(120, 120, 120);
     font-weight: 600;
     font-size: 16px;
     border-radius: 10px;
-    margin: 10px 30px;
-    color:rgb(255, 255, 255);
+    margin: 0px 10px;
+    color:white;
     border: 1px solid rgb(153, 153, 153);
 }
 
 .popupCancel{
     width: 125px;
-    color: white;
     background-color: rgb(255, 255, 255);
     font-weight: 600;
     font-size: 16px;
     border-radius: 10px;
-    margin: 10px 30px;    
+    margin: 0px 10px;
     color:black;
     border: 1px solid rgb(163, 163, 163);
 }

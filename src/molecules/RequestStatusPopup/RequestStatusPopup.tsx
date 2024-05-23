@@ -25,12 +25,16 @@ function RequestStatusPopup(props:RequestStatusPopupProps){
                     <label className={cx('popupLable')}><span className={cx('popupLableSpan')}>Request Status:</span> {props.requestStatus}</label>
                 </Stack.Item>
 
+								<Stack.Item>
+                    <label className={cx('popupLable')}><span className={cx('popupLableSpan')}>Request Submission Reason:</span> {props.submissionReason}</label>
+                </Stack.Item>
+
                 <Stack.Item>
                     <label className={cx('popupLable')}><span className={cx('popupLableSpan')}>Request Rejection Reason:</span> {props.rejectionReason}</label>
                 </Stack.Item>
 
                 <Stack.Item>
-                    <label className={cx('popupLable')}><span className={cx('popupLableSpan')}>Request Approval At:</span> {props.approvalAt.getDate()}-{props.approvalAt.getMonth()+1}-{props.approvalAt.getFullYear()}</label>
+                    <label className={cx('popupLable')}><span className={cx('popupLableSpan')}>Request Cleared At:</span> {props.approvalAt.getDate()}-{props.approvalAt.getMonth()+1}-{props.approvalAt.getFullYear()}</label>
                 </Stack.Item>
             </Stack>
             </Modal.Body>

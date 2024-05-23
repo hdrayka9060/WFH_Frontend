@@ -10,7 +10,20 @@
 }
 
 .ul{
-    margin: 15px 30px;
+		// width: 30px;
+		height: 70%;
+		// border: 1px solid black;
+    // margin: 15px 20px;
     list-style-type:none;
-    text-align: left;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+
+}
+.li{
+	// border: 1px solid black;
+	// width: 100px;
+	// margin: 15px auto;
+	// text-align: center;
+	margin-right: 25%;
 }

@@ -13,7 +13,9 @@ export interface SystemOrganisationDataTableData{
 
 export interface SystemOrganisationDataTableResponseObject{
     status:number,
-    data:SystemOrganisationDataTableData[]
+    data:SystemOrganisationDataTableData[],
+		message:string,
+		totalRecords:number
 }
 
 export interface EditUserPopupProps{
@@ -25,5 +27,7 @@ export interface EditUserPopupProps{
     userEmail:string,
     firstName:string,
     lastName:string,
-    dateOfBirth:Date
+    dateOfBirth:Date,
+		page:number,
+		limit:number
 }

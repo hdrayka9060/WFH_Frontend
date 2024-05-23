@@ -9,7 +9,7 @@ export const requestOtp= async (email:string):Promise<OtpResponse>=>{
 
 // Get organisations
 export const getOrganisations=async():Promise<GetOrganisationsResponse>=>{
-    let response=await axios.post('http://localhost:8080/otpvalidation/organisations');
+    let response=await axios.get('http://localhost:8080/otpvalidation/organisations');
     return response.data;
 }
 

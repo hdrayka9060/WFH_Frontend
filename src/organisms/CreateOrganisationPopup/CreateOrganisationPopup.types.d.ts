@@ -6,7 +6,9 @@ export interface CreateOrganisationPopupProps{
     setToggle:() => void,
     setMessage:(type:STATUS,head:string,message:string)=> void,
     changeData:(data:SystemOrganisationDataTableData[])=>void,
-    toggle:boolean
+    toggle:boolean,
+		limit:number,
+		page:number
 }
 
 export interface SystemOrganisationDataTableData{
@@ -19,5 +21,6 @@ export interface SystemOrganisationDataTableData{
 export interface SystemOrganisationDataTableResponseObject{
     status:number,
     data:SystemOrganisationDataTableData[],
-    message:string
+    message:string,
+		totalRecords:number
 }

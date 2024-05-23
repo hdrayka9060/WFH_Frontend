@@ -1,6 +1,7 @@
 import React  from 'react';
-import './App.css';
 import 'rsuite/dist/rsuite.min.css';
+import './App.css';
+
 import Routing from './routes';
 
 function App() {

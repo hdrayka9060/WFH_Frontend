@@ -6,12 +6,13 @@ import { OrganisationAdminRequestsPagePorps,SystemOrganisationDataTableData } fr
 import { useState } from 'react';
 
 function OrganisationAdminRequestsPage (props:OrganisationAdminRequestsPagePorps){
-    
+
     const head={
-        'id':'Sr', 
+        'id':'Sr',
         'name':"Name",
         'requestStatus':"Request Status",
         'email':"Email",
+				'wfhReason':'WFh Reason',
         'wfh':"WFH",
         'availedAt':"Availed At",
         'createdAt':'Created At',
@@ -23,12 +24,17 @@ function OrganisationAdminRequestsPage (props:OrganisationAdminRequestsPagePorps
     const [data,changeData]=useState<SystemOrganisationDataTableData[]>([]);
     const [isFilterPending,changeIsFilterPending]=useState<boolean>(true);
 
-    return(    
-        
+		
+
+		const [limit, setLimit] =useState<number>(1000);
+		const [page, setPage] =useState<number>(1);
+
+    return(
+
         <div>
             <NavBar userType='admin'/>
-            <PageHeader changeData={changeData} changeIsFilterPending={changeIsFilterPending}  organisation='' toggleWhat='nothing' addbutton={false} pageHeading={org} addButtonText='' />
-            <RequestsListTable data={data} isFilterPending={isFilterPending} changeData={changeData} head={head} />
+            <PageHeader limit={limit} page={page} setPage={setPage} setLimit={setLimit} changeData={changeData} changeIsFilterPending={changeIsFilterPending}  organisation='' toggleWhat='nothing' addbutton={false} pageHeading={org} addButtonText='' />
+            <RequestsListTable limit={limit} page={page} setPage={setPage} setLimit={setLimit} data={data} isFilterPending={isFilterPending} changeData={changeData} head={head} />
         </div>
     );
 }

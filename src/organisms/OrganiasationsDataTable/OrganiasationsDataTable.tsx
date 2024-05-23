@@ -1,5 +1,5 @@
 import { useState,useEffect } from 'react';
-import { Table } from 'rsuite';
+import { Table,Tooltip, Whisper,Pagination} from 'rsuite';
 import styles from './OrganiasationsDataTable.module.scss';
 import Icon from '../../atoms/Icon/index';
 import MessagePopup from '../../molecules/Message/index';
@@ -18,6 +18,9 @@ const cx=classNames.bind(styles);
 
 function OrganisationDataTable (props:TablePlotProps){
 
+	const editToolTip = (<Tooltip>Edit</Tooltip>);
+	const deleteToolTip = (<Tooltip>Delete</Tooltip>);
+
     const token=Cookies.get('token');
 
     let org:string|undefined;
@@ -27,7 +30,7 @@ function OrganisationDataTable (props:TablePlotProps){
     }
     else org=Cookies.get('organisation')
 
-    
+		const [totalRecords,changeTotalRecords]=useState<number>(0);
 
     const { Column, HeaderCell, Cell } = Table;
 
@@ -52,24 +55,40 @@ function OrganisationDataTable (props:TablePlotProps){
         setTimeout(()=>changeToggleMessage(false),1000);
     }
 
-    const fetchTableData =async ()=>{
+    const fetchTableData =async (page:number,limit:number)=>{
         // console.log("Fetching Table Data");
-        const res:SystemOrganisationDataTableResponseObject=await viewOrganisations(org,token);
-            if(res.status===200)props.changeData(res.data);
-            else toast.error(res.message);
+				if(page!==props.page)props.setPage(page);
+				if(limit!==props.limit)props.setLimit(limit)
+        const res:SystemOrganisationDataTableResponseObject=await viewOrganisations(org,page,limit,token);
+        if(res.status===200){props.changeData(res.data);changeTotalRecords(res.totalRecords);}
+        else toast.error(res.message);
     }
 
+
     useEffect( () => {
-        fetchTableData();
+        fetchTableData(props.page,props.limit);
     },[]);
+
+		const handleChangeLimit =async (num:number) => {
+			// changelimit2(num);
+			// console.log("changing limit")
+        // props.setPage(1);
+        // props.setLimit(num);
+        await fetchTableData(1,num);
+    };
+
+    const handleChangePage=async(num:number)=>{
+			console.log("changing page")
+        // props.setPage(num);
+        await fetchTableData(num,props.limit);
+    }
 
     // {props.relodeList?fetchTableData():<></>}
 
     const handleDeleteUser=async (organisationUserEmail:string)=>{
             const res:AcceptRejectDeleteResponse =await removeUser(org,organisationUserEmail,token);
             if(res.status===200){
-                toast.success(res.message)
-                await fetchTableData();
+                await fetchTableData(1,props.limit);
             }
             else toast.error(res.message);
     }
@@ -79,26 +98,28 @@ function OrganisationDataTable (props:TablePlotProps){
         changeFirstName(firstName);
         changeLastName(lastName);
         changeDateOfBirth(dateOfBirth);
-        console.log("user",userEmail,firstName,lastName,dateOfBirth,org)
+        // console.log("user",userEmail,firstName,lastName,dateOfBirth,org)
         setToggleEditUser();
     }
 
     const head=props.head;
-    
+
     return(
         <>
         <ToastContainer/>
         {toggleMessage?<MessagePopup type={messageType} head={messageHead} message={messageMessage}/>:<></>}
-        {toggleEditUser?<EditUserPopup 
-            toggle={toggleEditUser} 
-            setToggle={setToggleEditUser} 
+        {toggleEditUser?<EditUserPopup
+            toggle={toggleEditUser}
+            setToggle={setToggleEditUser}
             changeData={props.changeData}
             setMessage={setToggleMessage}
-            organisation={org} 
+            organisation={org}
             userEmail={userEmail}
             firstName={firstName}
             lastName={lastName}
             dateOfBirth={dateOfBirth}
+						page={props.page}
+						limit={props.limit}
         />:<></>}
         <div>
             <Table className={cx('tablePlotTable')} height={600} wordWrap={true} defaultExpandAllRows={true} defaultSortType='asc' data={props.data} >
@@ -168,18 +189,27 @@ function OrganisationDataTable (props:TablePlotProps){
 
                             return (
                                 <>
+																<Whisper placement="top" controlId="control-id-hover" trigger="hover" speaker={editToolTip}>
                                 <div className={cx('iconHover')} onClick={handleEdit}>
                                     <Icon icon={editIcon} altText='edit' width={15} />
                                 </div>
+																</Whisper>
+																<Whisper placement="top" controlId="control-id-hover" trigger="hover" speaker={deleteToolTip}>
                                 <div className={cx('iconHover')} onClick={handleDelete}>
                                     <Icon icon={deleteIcon} altText='delete' width={15} />
                                 </div>
+																</Whisper>
                                 </>
                             );
                         }}
                     </Cell>
                 </Column>
             </Table>
+						<div >
+							<Pagination prev next first last ellipsis boundaryLinks maxButtons={5} size='md' layout={['total', '-', 'limit', '|', 'pager', 'skip']}
+										total={totalRecords} limitOptions={[1,2,5,10,30,50]} limit={props.limit} activePage={props.page} onChangePage={handleChangePage} onChangeLimit={handleChangeLimit}
+							/>
+						</div>
         </div>
         </>
     );

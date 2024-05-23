@@ -10,6 +10,7 @@ export interface TableHead{
     'name':string,
     'requestStatus':string,
     'email':string,
+		'wfhReason':string,
     'wfh':string,
     'availedAt':string,
     'createdAt':string,
@@ -21,6 +22,10 @@ export interface TablePlotProps{
     data:SystemOrganisationDataTableData[],
     changeData:(value:SystemOrganisationDataTableData[])=>void,
     isFilterPending:boolean,
+		limit:number,
+		page:number,
+		setLimit:(num:number)=>void,
+		setPage:(num:number)=>void
 }
 
 export interface TableData{
@@ -55,6 +60,7 @@ export interface SystemOrganisationDataTableData{
     name:string,
     email:string,
     wfh:string,
+		wfhReason:string,
     requestStatus:string,
     availedAt:Date,
     createdAt:Date
@@ -63,7 +69,8 @@ export interface SystemOrganisationDataTableData{
 export interface SystemOrganisationDataTableResponseObject{
     status:number,
     data:SystemOrganisationDataTableData[],
-    message:string
+    message:string,
+		totalRecords:number
 }
 
 export interface AdminRequestsListTableData{

@@ -26,7 +26,7 @@ function AddUserPopup(props:AddUserPopupProps){
 
     const fetchTableData =async ()=>{
         // console.log("Fetching Table Data");
-        const res:SystemOrganisationDataTableResponseObject=await viewOrganisations(props.organisation,token);
+        const res:SystemOrganisationDataTableResponseObject=await viewOrganisations(props.organisation,props.page,props.limit,token);
             if(res.status===200)props.changeData(res.data);
     }
 
@@ -47,8 +47,6 @@ function AddUserPopup(props:AddUserPopupProps){
             return;
         }
 
-
-
         const obj={
             organisationUniqueName:org,
             organisationUserEmail:email,
@@ -68,8 +66,7 @@ function AddUserPopup(props:AddUserPopupProps){
 
     return(
         <>
-        <ToastContainer/>
-        
+				<ToastContainer/>
         <Modal overflow={true} open={props.toggle} onClose={props.setToggle}>
         <Modal.Header>
           <Modal.Title>Add User</Modal.Title>
@@ -93,7 +90,7 @@ function AddUserPopup(props:AddUserPopupProps){
 
                 <Stack.Item>
                     <label>Date of Birth</label>
-                    <DatePicker onChangeCalendarDate={(e)=>changeDateOfBirth(e)} limitEndYear={new Date().getFullYear()} editable={true} value={dateOfBirth}  onChange={(e)=>changeDateOfBirth(e)}	  placeholder="Date of Birth" className={cx('datePicker')} />
+                    <DatePicker  onChangeCalendarDate={(e)=>changeDateOfBirth(e)} limitEndYear={new Date().getFullYear()} editable={true} disabledDate={(date)=>{return (!date || date>new Date());}} value={dateOfBirth}  onChange={(e)=>changeDateOfBirth(e)}	  placeholder="Date of Birth" className={cx('datePicker')} />
                 </Stack.Item>
             </Stack>
         </Modal.Body>

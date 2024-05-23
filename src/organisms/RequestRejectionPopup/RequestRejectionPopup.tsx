@@ -19,9 +19,8 @@ function RequestRejectionPopup(props:RequestRejectionPopupProps){
 
     const fetchTableData =async ()=>{
         // console.log("Fetching Table Data");
-        const res:SystemOrganisationDataTableResponseObject=await adminRequests(token);
+        const res:SystemOrganisationDataTableResponseObject=await adminRequests(props.page,props.limit,token);
         if(res.status===200){
-            // toast.success(res.message)
             props.changeData(res.data);
         }
     }
@@ -31,12 +30,11 @@ function RequestRejectionPopup(props:RequestRejectionPopupProps){
             toast.error("Credentials Missing");
             return;
         }
-        
+
 
         const res=await adminRejectRequest(userEmail,availedAt,requestRejectionReason,token);
         if(res.status===200){
             // console.log('rejected',res,res.message)
-            // toast.success(res.message)
             await fetchTableData();
             setTimeout(()=>props.setToggle(),10)
             // props.setToggle()
@@ -48,7 +46,7 @@ function RequestRejectionPopup(props:RequestRejectionPopupProps){
         <>
         <ToastContainer/>
         <Modal overflow={true} open={props.toggle} onClose={props.setToggle}>
-        
+
         <Modal.Header>
           <Modal.Title>Request Rejection Reason</Modal.Title>
         </Modal.Header>

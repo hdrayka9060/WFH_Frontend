@@ -7,10 +7,14 @@ export interface AddUserPopupProps{
     setMessage:(type:STATUS,head:string,message:string)=> void,
     organisation:string,
     changeData:(data:SystemOrganisationDataTableData[])=>void,
-    toggle:boolean
+    toggle:boolean,
+		limit:number,
+		page:number
 }
 
 export interface SystemOrganisationDataTableResponseObject{
-    status:number,
-    data:SystemOrganisationDataTableData[]
+		status:number,
+    data:SystemOrganisationDataTableData[],
+    message:string,
+		totalRecords:number
 }

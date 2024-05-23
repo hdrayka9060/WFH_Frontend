@@ -21,7 +21,6 @@ function FilterPopup(props:FilterPopupProps){
             changeUsersList(res.data);
         }
         else toast.error(res.message);
-
     }
 
     useEffect(()=>{getUsersList()},[]);
@@ -38,7 +37,7 @@ function FilterPopup(props:FilterPopupProps){
         }
         let date;
         if(selectedDate)date=new Date(selectedDate.getFullYear(),selectedDate.getMonth(),selectedDate.getDate(),0,0,0,0);
-        const res:AdminRequestsListTableResponseObject=await adminFilterRequests(filterType,requestStatus,user,date,token);
+        const res:AdminRequestsListTableResponseObject=await adminFilterRequests(filterType,requestStatus,user,date,props.page,props.limit,token);
         // console.log(res);
         if(res.status===200){
             // console.log("")

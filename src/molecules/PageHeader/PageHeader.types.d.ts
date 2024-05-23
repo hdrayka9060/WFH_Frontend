@@ -10,5 +10,9 @@ export interface PageHeaderProps{
     addbutton:boolean,
     organisation:string,
     changeData:(data:SystemOrganisationDataTableData[])=>void,
-    changeIsFilterPending:(value:boolean)=>void
+    changeIsFilterPending:(value:boolean)=>void,
+		limit:number,
+		page:number,
+		setLimit:(num:number)=>void,
+		setPage:(num:number)=>void
 }

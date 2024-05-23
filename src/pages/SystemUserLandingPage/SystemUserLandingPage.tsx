@@ -14,12 +14,13 @@ function SystemUserLandingPage (props:SystemUserLandingPageProps){
         'action':'Action'
     };
     const [data,changeData]=useState<SystemOrganisationDataTableData[]>([]);
-
+		const [limit, setLimit] =useState<number>(10);
+		const [page, setPage] =useState<number>(1);
     return(
         <div>
             <NavBar userType='system'/>
-            <PageHeader changeData={changeData} changeIsFilterPending={()=>{}} organisation=''   toggleWhat='createOrganisation' addbutton={true} pageHeading="Organisation" addButtonText='Create Organisation'  />
-            <OrganisationListTable data={data} changeData={changeData} setOrganisation={props.setOrganisation} head={head}  />
+            <PageHeader limit={limit} page={page} setPage={setPage} setLimit={setLimit} changeData={changeData} changeIsFilterPending={()=>{}} organisation=''   toggleWhat='createOrganisation' addbutton={true} pageHeading="Organisation" addButtonText='Create Organisation'  />
+            <OrganisationListTable data={data} limit={limit} page={page} setPage={setPage} setLimit={setLimit} changeData={changeData} setOrganisation={props.setOrganisation} head={head}  />
         </div>
     );
 }

@@ -19,7 +19,7 @@ function CreateOrganisationPopup(props:CreateOrganisationPopupProps){
 
     const fetchTableData =async ()=>{
         console.log("Fetching Table Data");
-        const res:SystemOrganisationDataTableResponseObject=await requestSystemUserOrganisations(token);
+        const res:SystemOrganisationDataTableResponseObject=await requestSystemUserOrganisations(props.page,props.limit,token);
         // console.log("res",res)
         if(res.status===200)props.changeData(res.data);
         else toast.error(res.message);
@@ -31,7 +31,7 @@ function CreateOrganisationPopup(props:CreateOrganisationPopupProps){
             toast.error("Credentials Missing");
             return;
         }
-        
+
         const obj={
             organisationUniqueName:organisationUniqueName,
             organisationDisplayName:organisationDisplayName,
@@ -69,7 +69,7 @@ function CreateOrganisationPopup(props:CreateOrganisationPopupProps){
 
                 <Stack.Item>
                     <label>Max WFH Days</label>
-                    <InputNumber onChange={(e)=>changeMaxWfh(Number(e))} defaultValue={0} placeholder="Max WFH Days" className={cx('popupInputNumber')}/>
+                    <InputNumber min={0} onChange={(e)=>changeMaxWfh(Number(e))} defaultValue={0} placeholder="Max WFH Days" className={cx('popupInputNumber')}/>
                 </Stack.Item>
             </Stack>
             </Modal.Body>

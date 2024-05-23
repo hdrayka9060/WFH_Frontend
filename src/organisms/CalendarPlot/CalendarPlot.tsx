@@ -22,6 +22,7 @@ function CalendarPlot (props:CalenderPlotProps){
     const [selectedDateAvailedAt,changeSelectedDateAvailedAt]=useState<Date>(new Date());
     const [selectedDateCreatedAt,changeSelectedDateCreatedAt]=useState<Date>(new Date());
     const [selectedDateRequestStatus,changeSelectedDateRequestStatus]=useState<string>("");
+    const [selectedDateSubmissionReason,changeSelectedDateSubmissionReason]=useState<string>("");
     const [selectedDateRejectionReason,changeSelectedDateRejectionReason]=useState<string>("");
     const [selectedDateApprovalAt,changeSelectedDateApprovalAT]=useState<Date>(new Date());
 
@@ -33,7 +34,7 @@ function CalendarPlot (props:CalenderPlotProps){
     const [messageHead,changeMessageHead]=useState<string>("");
     const [messageMessage,changeMessageMessage]=useState<string>("");
 
-    const [calendarData,changeCalanderData]=useState<CalendarData[]>([{availedAt:new Date(), createdAt:new Date(), approvalAt:new Date(), rejectionReason:"", requestStatus:"pending"}]);
+    const [calendarData,changeCalanderData]=useState<CalendarData[]>([{availedAt:new Date(), createdAt:new Date(), approvalAt:new Date(), wfhReason:"",rejectionReason:"", requestStatus:"pending"}]);
 
     const setToggleRequestSubmission=()=>{changeToggleRequestSubmission(!toggleRequestSubmission);};
     const setToggleRequestStatus=()=>{changeToggleRequestStatus(!toggleRequestStatus);};
@@ -49,7 +50,9 @@ function CalendarPlot (props:CalenderPlotProps){
     const token=Cookies.get('token');
 
     const fetchCalenderData=async()=>{
+				// console.log('token',token)
         const res=await requestCalenderData(token);
+				// console.log('res',res);
         if(res.status===200){
             changeCalanderData(res.data);
             changeWfh(res.wfh);
@@ -67,7 +70,7 @@ function CalendarPlot (props:CalenderPlotProps){
             if(date.getDate()===availedDate.getDate() && date.getMonth()===availedDate.getMonth() && date.getFullYear()===availedDate.getFullYear()){
                 return (
                   <ul className={cx('ul')}>
-                        <li>
+                        <li className={cx('li')}>
                          <b>{calendarData[i]['requestStatus']}</b>
                       </li>
                   </ul>
@@ -99,6 +102,7 @@ function CalendarPlot (props:CalenderPlotProps){
                 changeSelectedDateAvailedAt(new Date(calendarData[i]['availedAt']));
                 changeSelectedDateCreatedAt(new Date(calendarData[i]['createdAt']));
                 changeSelectedDateRequestStatus(calendarData[i]['requestStatus']);
+                changeSelectedDateSubmissionReason(calendarData[i]['wfhReason']);
                 changeSelectedDateRejectionReason(calendarData[i]['rejectionReason']);
                 setToggleRequestStatus();
                 return ;
@@ -111,14 +115,14 @@ function CalendarPlot (props:CalenderPlotProps){
         }
         return;
     };
-    
+
 
     return(
         <>
         <ToastContainer />
         {toggleMessage?<MessagePopup type={messageType} head={messageHead} message={messageMessage}/>:<></>}
         {toggleRequestStatus?
-                <RequestStatusPopup toggle={toggleRequestStatus} availedAt={selectedDateAvailedAt} createdAt={selectedDateCreatedAt} approvalAt={selectedDateApprovalAt} rejectionReason={selectedDateRejectionReason} requestStatus={selectedDateRequestStatus} setToggle={setToggleRequestStatus} setMessage={setToggleMessage}  />
+                <RequestStatusPopup toggle={toggleRequestStatus} availedAt={selectedDateAvailedAt} createdAt={selectedDateCreatedAt} approvalAt={selectedDateApprovalAt} rejectionReason={selectedDateRejectionReason} submissionReason={selectedDateSubmissionReason} requestStatus={selectedDateRequestStatus} setToggle={setToggleRequestStatus} setMessage={setToggleMessage}  />
         :<></>}
         {toggleRequestSubmission?
                 <RequestSubmissionPopup wfh={wfh} maxWfh={maxWfh} toggle={toggleRequestSubmission} changeCalanderData={changeCalanderData} availedAt={selectedDate} setToggle={setToggleRequestSubmission} setMessage={setToggleMessage}  />

@@ -12,7 +12,8 @@ export interface SystemOrganisationDataTableData{
 export interface SystemOrganisationDataTableResponseObject{
     status:number,
     data:SystemOrganisationDataTableData[],
-    message:string
+    message:string,
+		totalRecords:number
 }
 
 export interface EditOrganisationPopupProps{
@@ -24,5 +25,7 @@ export interface EditOrganisationPopupProps{
     organisationMaxWfh:number,
     changeData:(data:SystemOrganisationDataTableData[])=>void,
     email:string|undefined,
-    toggle:boolean
+    toggle:boolean,
+		limit:number,
+		page:number
 }

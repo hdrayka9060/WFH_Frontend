@@ -1,8 +1,8 @@
 import { useState,useEffect } from 'react';
-import { Table,Button } from 'rsuite';
+import { Table,Button,Pagination } from 'rsuite';
 import styles from './RequestsListTable.module.scss';
 import MessagePopup from '../../molecules/Message/index';
-import { TablePlotProps,TypeAttributes, SystemOrganisationDataTableResponseObject, AcceptRejectDeleteResponse,SystemOrganisationDataTableData } from './RequestsListTable.types';
+import { TablePlotProps,TypeAttributes, SystemOrganisationDataTableResponseObject, AcceptRejectDeleteResponse } from './RequestsListTable.types';
 import Cookies from 'js-cookie';
 import { adminAcceptRequest, adminRequests } from '../../services/OrganisationUserApi';
 import RequestRejectionPopup from '../RequestRejectionPopup/RequestRejectionPopup';
@@ -16,6 +16,8 @@ function RequestsListTable (props:TablePlotProps){
     const token=Cookies.get('token');
 
     const { Column, HeaderCell, Cell } = Table;
+
+		const [totalRecords,changeTotalRecords]=useState<number>(0);
 
     const [toggleRequestRejection,changeToggleRequestRejection]=useState<boolean>(false);
     const setToggleRequestRejection =()=>changeToggleRequestRejection(!toggleRequestRejection);
@@ -37,16 +39,32 @@ function RequestsListTable (props:TablePlotProps){
         setTimeout(()=>changeToggleMessage(false),1000);
     }
 
-    const fetchTableData =async ()=>{
-        const res:SystemOrganisationDataTableResponseObject=await adminRequests(token);
-        if(res.status===200)props.changeData(res.data);
+    const fetchTableData =async (page:number,limit:number)=>{
+				props.setPage(page);
+				props.setLimit(limit);
+        const res:SystemOrganisationDataTableResponseObject=await adminRequests(page,limit,token);
+				// console.log('res',res)
+        if(res.status===200){props.changeData(res.data);changeTotalRecords(res.totalRecords)}
         else toast.error(res.message);
 
     }
 
     useEffect( () => {
-        fetchTableData();
+        fetchTableData(props.page,props.limit);
     },[]);
+
+		const handleChangeLimit =async (num:number) => {
+			console.log("changing limit")
+        // props.setPage(1);
+        // props.setLimit(num);
+        await fetchTableData(1,num);
+    };
+
+    const handleChangePage=async(num:number)=>{
+			console.log("changing page")
+        // props.setPage(num);
+        await fetchTableData(num,props.limit);
+    }
 
     const handleRejectRequest=async (email:string,availedAt:Date)=>{
         changeUserEmail(email);
@@ -57,20 +75,19 @@ function RequestsListTable (props:TablePlotProps){
     const handleAcceptRequest:(userEmail:string,availedAt:Date)=>Promise<void>=async (userEmail:string,availedAt:Date)=>{
             const res:AcceptRejectDeleteResponse =await adminAcceptRequest(userEmail, availedAt,token);
             if(res.status===200){
-                toast.success(res.message)
-                await fetchTableData()
+                await fetchTableData(1,props.limit)
             }
             else toast.error(res.message);
     }
 
     const head=props.head;
-    
+
     return(
         <>
         <ToastContainer/>
         {toggleMessage?<MessagePopup type={messageType} head={messageHead} message={messageMessage}/>:<></>}
         {toggleRequestRejection?
-                <RequestRejectionPopup toggle={toggleRequestRejection}  changeData={(data)=>{props.changeData(data);toast.success("Request Rejected")}} userEmail={userEmail} availedAt={availedAt} setToggle={setToggleRequestRejection} setMessage={setToggleMessage}  />
+                <RequestRejectionPopup page={props.page} limit={props.limit} toggle={toggleRequestRejection}  changeData={(data)=>{props.changeData(data);}} userEmail={userEmail} availedAt={availedAt} setToggle={setToggleRequestRejection} setMessage={setToggleMessage}  />
         :<></>}
 
         <div>
@@ -94,6 +111,11 @@ function RequestsListTable (props:TablePlotProps){
                 <Column width={150} flexGrow={1}>
                     <HeaderCell>{head['requestStatus']}</HeaderCell>
                     <Cell dataKey="requestStatus" />
+                </Column>
+
+								<Column width={150} flexGrow={1}>
+                    <HeaderCell>{head['wfhReason']}</HeaderCell>
+                    <Cell dataKey="wfhReason" />
                 </Column>
 
                 <Column width={150} flexGrow={1}>
@@ -124,7 +146,7 @@ function RequestsListTable (props:TablePlotProps){
                             }
                         }
                     </Cell>
-                    
+
                 </Column>
 
 
@@ -160,6 +182,11 @@ function RequestsListTable (props:TablePlotProps){
                     </Cell>
                 </Column>
             </Table>
+						{/* <div >
+							<Pagination prev next first last ellipsis boundaryLinks maxButtons={5} size='md' layout={['total', '-', 'limit', '|', 'pager', 'skip']}
+										total={totalRecords} limitOptions={[1,2,5,10, 30, 50]} limit={props.limit} activePage={props.page} onChangePage={handleChangePage} onChangeLimit={handleChangeLimit}
+							/>
+						</div> */}
         </div>
         </>
     );

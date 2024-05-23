@@ -38,7 +38,6 @@ function RequestSubmissionPopup(props:RequestSubmissionPopupProps){
         // console.log(availedAt,requestSubmissionReason);
         const res=await requestWfh(availedAt,requestSubmissionReason,token);
         if(res.status===200){
-            toast.success(res.message)
             await fetchCalenderData();
             props.setToggle()
         }

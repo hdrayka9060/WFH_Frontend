@@ -6,7 +6,7 @@ import { SystemUserOrganisationPageProps,SystemOrganisationDataTableData } from 
 import { useState } from 'react';
 function SystemUserOrganisationPage (props:SystemUserOrganisationPageProps){
     const head={
-        'id':'Sr', 
+        'id':'Sr',
         'firstName':"First Name",
         'lastName':"Last Name",
         'email':"Email",
@@ -17,7 +17,8 @@ function SystemUserOrganisationPage (props:SystemUserOrganisationPageProps){
     };
 
     const [data,changeData]=useState<SystemOrganisationDataTableData[]>([]);
-
+		const [limit, setLimit] =useState<number>(10);
+		const [page, setPage] =useState<number>(1);
     let org:string;
     if(props.organisation){
         Cookies.set('organisation',props.organisation);
@@ -27,8 +28,8 @@ function SystemUserOrganisationPage (props:SystemUserOrganisationPageProps){
     return(
         <div>
             <NavBar userType='system'/>
-            <PageHeader changeData={changeData} changeIsFilterPending={()=>{}}  organisation={org} toggleWhat='addUser' addbutton={true} pageHeading={org} addButtonText='Add User' />
-            <OrganisationDataTable data={data} changeData={changeData} organisation={org} head={head}  />
+            <PageHeader limit={limit} page={page} setPage={setPage} setLimit={setLimit} changeData={changeData} changeIsFilterPending={()=>{}}  organisation={org} toggleWhat='addUser' addbutton={true} pageHeading={org} addButtonText='Add User' />
+            <OrganisationDataTable limit={limit} page={page} setPage={setPage} setLimit={setLimit} data={data} changeData={changeData} organisation={org} head={head}  />
         </div>
     );
 }

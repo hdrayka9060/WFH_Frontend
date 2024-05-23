@@ -21,11 +21,10 @@ const cx=classNames.bind(styles);
 
 function PageHeader (props:PageHeaderProps){
 
-    const [userType,changeUerType]=useState<string|undefined>(Cookies.get('userType'));
 
     const [toggleCreateOrganisation,changeToggleCreateOrganisation]=useState<boolean>(false);
     const [toggleAddUser,changeToggleAddUser]=useState<boolean>(false);
-    const [toggleFilter,changeToggleFilter]=useState<boolean>(false);    
+    const [toggleFilter,changeToggleFilter]=useState<boolean>(false);
     const [toggleMessage,changeToggleMessage]=useState<boolean>(false);
 
 
@@ -35,7 +34,7 @@ function PageHeader (props:PageHeaderProps){
 
     const setToggleCreateOrganisation=()=>{changeToggleCreateOrganisation(!toggleCreateOrganisation);};
     const setToggleAddUser=()=>{changeToggleAddUser(!toggleAddUser);};
-    const setToggleFilter=()=>{if(userType==='admin')changeToggleFilter(!toggleFilter);};
+    const setToggleFilter=()=>changeToggleFilter(!toggleFilter);
     const setToggleMessage=(type:TypeAttributes.Status, head:string, message:string)=>{
         changeToggleMessage(true);
         changeMessageType(type);
@@ -53,22 +52,16 @@ function PageHeader (props:PageHeaderProps){
         <>
         {toggleMessage?<MessagePopup type={messageType} head={messageHead} message={messageMessage}/>:<></>}
         {toggleCreateOrganisation?
-            <div className={cx('popupToggleDiv')}>
-                <CreateOrganisationPopup toggle={toggleCreateOrganisation} changeData={props.changeData}  setToggle={setToggleCreateOrganisation} setMessage={setToggleMessage}  />
-            </div>
+                <CreateOrganisationPopup limit={props.limit} page={props.page} toggle={toggleCreateOrganisation} changeData={props.changeData}  setToggle={setToggleCreateOrganisation} setMessage={setToggleMessage}  />
         :<></>}
         {toggleAddUser?
-            <div className={cx('popupToggleDiv')}>
-                <AddUserPopup toggle={toggleAddUser}  changeData={props.changeData} organisation={props.organisation} setToggle={setToggleAddUser} setMessage={setToggleMessage}  />
-            </div>
+                <AddUserPopup limit={props.limit} page={props.page} toggle={toggleAddUser}  changeData={props.changeData} organisation={props.organisation} setToggle={setToggleAddUser} setMessage={setToggleMessage}  />
         :<></>}
         {toggleFilter?
-            <div className={cx('popupToggleDiv')}>
-                <FilterPopup toggle={toggleFilter}  changeData={props.changeData} changeIsFilterPending={props.changeIsFilterPending} setToggle={setToggleFilter} setMessage={setToggleMessage}  />
-            </div>
+                <FilterPopup page={props.page} limit={props.limit} setPage={props.setPage} setLimit={props.setLimit} toggle={toggleFilter}  changeData={props.changeData} changeIsFilterPending={props.changeIsFilterPending} setToggle={setToggleFilter} setMessage={setToggleMessage}  />
         :<></>}
         <div className={cx('pageHeaderDiv')}>
-            <div onClick={setToggleFilter} ><IconButton icon={<Icon icon={filterIcon} altText='filter' width={25} />} className={cx('pageHeaderIconButton')} /></div>
+            <div onClick={setToggleFilter} >{Cookies.get('userType')==='admin'?<IconButton icon={<Icon icon={filterIcon} altText='filter' width={25} />} className={cx('pageHeaderIconButton')} />:<></>}</div>
             <Heading level={3} className={cx('pageHeaderHeading')} >{props.pageHeading}</Heading>
             {props.addbutton?<IconButton onClick={handleToggle} className={cx('pageHeaderIconButton')} appearance='primary' color='blue'> <Icon icon={plusIcon} altText='Sort Icon' width={15} /> <span className={cx('pageHeaderIconText')}>{props.addButtonText}</span></IconButton>:<div></div>}
         </div>

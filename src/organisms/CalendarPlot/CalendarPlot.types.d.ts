@@ -3,7 +3,7 @@ export declare namespace TypeAttributes {
 }
 
 export interface CalenderPlotProps{
-    
+
 }
 
 export interface CalendarData{
@@ -11,5 +11,6 @@ export interface CalendarData{
     createdAt: Date,
     approvalAt: Date,
     requestStatus:string,
+		wfhReason:string,
     rejectionReason:string
 }

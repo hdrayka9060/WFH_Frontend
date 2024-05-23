@@ -8,11 +8,14 @@ export interface RequestRejectionPopupProps{
     availedAt:Date,
     userEmail:string,
     changeData:(data:SystemOrganisationDataTableData[])=>void,
-    toggle:boolean
+    toggle:boolean,
+		page:number,
+		limit:number
 }
 
 export interface SystemOrganisationDataTableResponseObject{
     status:number,
     data:SystemOrganisationDataTableData[],
-    message:string
+    message:string,
+		totalRecords:number
 }

@@ -20,7 +20,7 @@ function EditUserPopup(props:EditUserPopupProps){
 
     const fetchTableData =async ()=>{
         console.log("Fetching Table Data");
-        const res:SystemOrganisationDataTableResponseObject=await viewOrganisations(props.organisation,token);
+        const res:SystemOrganisationDataTableResponseObject=await viewOrganisations(props.organisation,props.page,props.limit,token);
         if(res.status===200)props.changeData(res.data);
     }
 
@@ -35,8 +35,8 @@ function EditUserPopup(props:EditUserPopupProps){
         return at===1 && dot===1;
     }
 
-    const handleSubmit=async()=>{   
-        
+    const handleSubmit=async()=>{
+
 
         if(!validateEmail() || !firstName.length || !lastName.length || !dateOfBirth || dateOfBirth>new Date() ){
             toast.error("Credentials Missing");
@@ -44,7 +44,7 @@ function EditUserPopup(props:EditUserPopupProps){
         }
 
         if(dateOfBirth.toString()==='Invalid Date')changeDateOfBirth(props.dateOfBirth);
-        
+
         const obj={
             organisationUserOldEmail:props.userEmail,
             organisationUniqueName:props.organisation,
@@ -92,7 +92,7 @@ function EditUserPopup(props:EditUserPopupProps){
 
                 <Stack.Item>
                     <label>Date of Birth</label>
-                    <DatePicker limitEndYear={new Date().getFullYear()} onChangeCalendarDate={(e)=>changeDateOfBirth(e)} editable={true} value={dateOfBirth}  onChange={(e)=>changeDateOfBirth(e)}	  placeholder="Date of Birth" className={cx('datePicker')} />
+                    <DatePicker value={dateOfBirth} limitEndYear={new Date().getFullYear()} onChangeCalendarDate={(e)=>changeDateOfBirth(e)} editable={true} defaultValue={new Date(props.dateOfBirth)} disabledDate={(date)=>{return (!date || date>new Date());}} onChange={(e)=>changeDateOfBirth(e)}	  placeholder="Date of Birth" className={cx('datePicker')} />
 
                 </Stack.Item>
             </Stack>

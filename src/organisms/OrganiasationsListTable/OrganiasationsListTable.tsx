@@ -1,5 +1,5 @@
 import { useState,useEffect } from 'react';
-import { Table ,Pagination} from 'rsuite';
+import { Table,Tooltip, Whisper,Pagination} from 'rsuite';
 import styles from './OrganiasationsListTable.module.scss';
 import Icon from '../../atoms/Icon/index';
 import MessagePopup from '../../molecules/Message/index';
@@ -18,6 +18,9 @@ const cx=classNames.bind(styles);
 
 function OrganisationListTable (props:TablePlotProps){
 
+		const editToolTip = (<Tooltip>Edit</Tooltip>);
+		const viewToolTip = (<Tooltip>View</Tooltip>);
+		const deleteToolTip = (<Tooltip>Delete</Tooltip>);
 
     const email=Cookies.get('email');
     const token=Cookies.get('token');
@@ -26,17 +29,16 @@ function OrganisationListTable (props:TablePlotProps){
 
     const { Column, HeaderCell, Cell } = Table;
 
-    const [sr,changeSr]=useState<number>(1);
-    const setSr=(value:number)=>changeSr(value);
-
     const [organisationUniqueName,changeOrganisationUniqueName]=useState<string>("");
     const [organisationDisplayName,changeOrganisationDisplayName]=useState<string>("");
     const [organisationAdmin,changeOrganisationAdmin]=useState<string>("");
     const [organisationMaxWfh,changeOrganisationMaxWfh]=useState<number>(0);
 
+		const [totalRecords,changeTotalRecords]=useState<number>(0);
+
     const [toggleEditOrganisation,changeToggleEditOrganisation]=useState<boolean>(false);
     const setToggleEditOrganisation =()=>{
-        changeToggleEditOrganisation(!toggleEditOrganisation);        
+        changeToggleEditOrganisation(!toggleEditOrganisation);
     }
 
 
@@ -53,16 +55,31 @@ function OrganisationListTable (props:TablePlotProps){
         setTimeout(()=>changeToggleMessage(false),1000);
     }
 
-    const fetchTableData =async ()=>{
-        console.log("Fetching Table Data");
-        const res:SystemOrganisationDataTableResponseObject=await requestSystemUserOrganisations(token);
-        console.log("res",email,res)
-        if(res.status===200)props.changeData(res.data);
+    const fetchTableData =async (page:number,limit:number)=>{
+			props.setPage(page);
+			props.setLimit(limit)
+        // console.log("Fetching Table Data");
+        const res:SystemOrganisationDataTableResponseObject=await requestSystemUserOrganisations(page,limit,token);
+        // console.log("res",res)
+				if(res.status===200){props.changeData(res.data);changeTotalRecords(res.totalRecords);}
         else toast.error(res.message);
     }
 
+    const handleChangeLimit =async (num:number) => {
+			console.log("changing limit")
+        // props.setPage(1);
+        // props.setLimit(num);
+        await fetchTableData(1,num);
+    };
+
+    const handleChangePage=async(num:number)=>{
+			console.log("changing page")
+        // props.setPage(num);
+        await fetchTableData(num,props.limit);
+    }
+
     useEffect( () => {
-        fetchTableData();
+        fetchTableData(props.page,props.limit);
     },[]);
 
     // {props.relodeList?fetchTableData():<></>}
@@ -82,32 +99,33 @@ function OrganisationListTable (props:TablePlotProps){
     }
 
     const handleDeleteOrganisation=async (organisation:string)=>{
-            console.log(organisation)
+            // console.log(organisation)
             const res:AcceptRejectDeleteResponse =await deleteOrganisations(organisation,token);
             if(res.status===200){
-                toast.success(res.message)
-                await fetchTableData();
+                await fetchTableData(1,props.limit);
             }
             else toast.error(res.message);
-            
+
     }
 
     const head=props.head;
-    
+
     return(
         <>
         <ToastContainer/>
         {toggleMessage?<MessagePopup type={messageType} head={messageHead} message={messageMessage}/>:<></>}
         {toggleEditOrganisation?
-                <EditOrganisationPopup 
+                <EditOrganisationPopup
+										limit={props.limit}
+										page={props.page}
                     toggle={toggleEditOrganisation}
                     email={email}
                     changeData={props.changeData}
                     organisationUniqueName={organisationUniqueName}
-                    organisationDisplayName={organisationDisplayName} 
-                    organisationAdmin={organisationAdmin} 
-                    organisationMaxWfh={organisationMaxWfh} 
-                    setToggle={setToggleEditOrganisation} 
+                    organisationDisplayName={organisationDisplayName}
+                    organisationAdmin={organisationAdmin}
+                    organisationMaxWfh={organisationMaxWfh}
+                    setToggle={setToggleEditOrganisation}
                     setMessage={setToggleMessage}
                 />
         :<></>}
@@ -115,70 +133,79 @@ function OrganisationListTable (props:TablePlotProps){
         <div>
             <Table className={cx('tablePlotTable')} height={600} wordWrap={true} defaultExpandAllRows={true} defaultSortType='asc' data={props.data} >
 
-                <Column width={150} flexGrow={1} align="center" fixed>
+                <Column flexGrow={1} align="center" fixed>
                     <HeaderCell>{head['id']}</HeaderCell>
                     <Cell dataKey='id' />
                 </Column>
 
-                <Column width={250} flexGrow={1.5}>
+                <Column flexGrow={1.5}>
                     <HeaderCell>{head['uniqueName']}</HeaderCell>
                     <Cell dataKey="orgUniqName" />
                 </Column>
 
-                <Column width={250} flexGrow={1.5}>
+                <Column flexGrow={1.5}>
                     <HeaderCell>{head['displayName']}</HeaderCell>
                     <Cell dataKey="orgDisplayName" />
                 </Column>
 
-                <Column width={250} flexGrow={1.5}>
+                <Column flexGrow={1.5}>
                     <HeaderCell>{head['admin']}</HeaderCell>
                     <Cell dataKey="orgAdmin" />
                 </Column>
 
-                <Column width={150} flexGrow={1}>
+                <Column flexGrow={1}>
                     <HeaderCell>{head['maxWfh']}</HeaderCell>
                     <Cell dataKey="maxWfh" />
                 </Column>
 
-                <Column width={300} flexGrow={2}>
+                <Column flexGrow={2}>
                     <HeaderCell>{head['action']}</HeaderCell>
                     <Cell>
                         {rowData => {
 
                             async function handleEdit() {
                                 await handleEditOrganisation(rowData['orgUniqName'],rowData['orgDisplayName'],rowData['orgAdmin'],rowData['maxWfh']);
-                                console.log("edit");
+                                // console.log("edit");
                             }
 
                             async function handleView() {
                                 await handleViewOrganisation(rowData['orgUniqName']);
-                                console.log("view");
+                                // console.log("view");
                             }
 
                             async function handleDelete() {
                                 await handleDeleteOrganisation(rowData['orgUniqName']);
-                                console.log("delete");
+                                // console.log("delete");
                             }
-                            
+
                             return (
                                 <>
+								<Whisper placement="top" controlId="control-id-hover" trigger="hover" speaker={editToolTip}>
                                 <div className={cx('iconHover')} onClick={handleEdit}>
-                                    <Icon icon={editIcon} altText='edit' width={15} />
+									<Icon icon={editIcon} altText='edit' width={15} />
                                 </div>
-
+								</Whisper>
+								<Whisper placement="top" controlId="control-id-hover" trigger="hover" speaker={viewToolTip}>
                                 <div className={cx('iconHover')} onClick={handleView}>
                                 <Icon icon={viewIcon} altText='view' width={15} />
                                 </div>
-
+								</Whisper>
+								<Whisper placement="top" controlId="control-id-hover" trigger="hover" speaker={deleteToolTip}>
                                 <div className={cx('iconHover')} onClick={handleDelete}>
                                 <Icon icon={deleteIcon} altText='delete' width={15} />
                                 </div>
-                                </>
+								</Whisper>
+								</>
                             );
                         }}
                     </Cell>
                 </Column>
             </Table>
+						<div >
+							<Pagination prev next first last ellipsis boundaryLinks maxButtons={5} size='md' layout={['total', '-', 'limit', '|', 'pager', 'skip']}
+										total={totalRecords} limitOptions={[1,2,5,10, 30, 50]} limit={props.limit} activePage={props.page} onChangePage={handleChangePage} onChangeLimit={handleChangeLimit}
+							/>
+						</div>
         </div>
         </>
     );

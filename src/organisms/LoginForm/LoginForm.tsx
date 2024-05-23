@@ -1,5 +1,5 @@
 import styles from './LoginForm.module.scss';
-import { Heading,Input,Button, SelectPicker } from 'rsuite';
+import { Heading,Input,Button, SelectPicker, InputNumber } from 'rsuite';
 import {useEffect, useState} from 'react';
 import { useNavigate } from "react-router-dom";
 import Cookies from 'js-cookie';
@@ -13,7 +13,7 @@ import {ToastContainer, toast } from 'react-toastify';
 const cx=classNames.bind(styles);
 
 function LoginForm(props:LoginFormProps){
-    
+
     const navigator = useNavigate();
 
     const [organisationList,changeOrganisationList] =useState<string[]>([""]);
@@ -184,7 +184,7 @@ function LoginForm(props:LoginFormProps){
         {toggleMessage?<MessagePopup type={messageType} head={messageHead} message={messageMessage}/>:<></>}
         <div className={cx('loginFormDiv')}>
             <Heading level={2} className={cx('loginFormHeading')} >Sign in to RemoteHQ    </Heading>
-            
+
             {props.userType==="organisation"?<><span className={cx('lebal')}>Organisation Unique Name <span className={cx('estric')}>*</span></span><SelectPicker onChange={(e)=>{changeOrganisation(`${e}`)}} onClean={()=>changeOrganisation('')} data={organisationList.map(item => ({ label: item, value: item }))} searchable={true} placeholder="Select Organisation" disabled={isValidUser} className={cx('loginFormSelectPicker')} /></>:<></>}
             <span className={cx('lebal')}>Email <span className={cx('estric')}>*</span></span>
             <Input onChange={(e)=>{changeEmail(e)}} placeholder="Enter Email" disabled={isValidUser} className={cx('loginFormInput')}/>
@@ -192,9 +192,9 @@ function LoginForm(props:LoginFormProps){
             {
                 isValidUser?(<>
                     <span className={cx('lebal')}>OTP <span className={cx('estric')}>*</span></span>
-                    <Input onChange={(e)=>{changeOtp(e)}} placeholder="Enter OTP" type='password' className={cx('loginFormInput')} />
+                    <InputNumber min={0} onChange={(e)=>{changeOtp(`${e?.toString()}`)}} placeholder="Enter OTP"  className={cx('loginFormInput')} />
                     <Button disabled={loginBtnDisable} className={cx('loginFormSubmit')} onClick={handleLoginCLick} >Log in</Button>
-                    
+
                 </>):<></>
             }
         </div>
