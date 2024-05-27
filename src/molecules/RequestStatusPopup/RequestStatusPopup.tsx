@@ -29,13 +29,13 @@ function RequestStatusPopup(props:RequestStatusPopupProps){
                     <label className={cx('popupLable')}><span className={cx('popupLableSpan')}>Request Submission Reason:</span> {props.submissionReason}</label>
                 </Stack.Item>
 
-                <Stack.Item>
+                {props.requestStatus==='Rejected'?<Stack.Item>
                     <label className={cx('popupLable')}><span className={cx('popupLableSpan')}>Request Rejection Reason:</span> {props.rejectionReason}</label>
-                </Stack.Item>
+                </Stack.Item>:<></>}
 
-                <Stack.Item>
+                {props.requestStatus!=='Pending'?<Stack.Item>
                     <label className={cx('popupLable')}><span className={cx('popupLableSpan')}>Request Cleared At:</span> {props.approvalAt.getDate()}-{props.approvalAt.getMonth()+1}-{props.approvalAt.getFullYear()}</label>
-                </Stack.Item>
+                </Stack.Item>:<></>}
             </Stack>
             </Modal.Body>
         <Modal.Footer>

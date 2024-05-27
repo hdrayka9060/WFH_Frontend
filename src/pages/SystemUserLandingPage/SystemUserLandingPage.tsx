@@ -18,7 +18,7 @@ function SystemUserLandingPage (props:SystemUserLandingPageProps){
 		const [page, setPage] =useState<number>(1);
     return(
         <div>
-            <NavBar userType='system'/>
+            <NavBar wfh={0} maxWfh={0} userType='system'/>
             <PageHeader limit={limit} page={page} setPage={setPage} setLimit={setLimit} changeData={changeData} changeIsFilterPending={()=>{}} organisation=''   toggleWhat='createOrganisation' addbutton={true} pageHeading="Organisation" addButtonText='Create Organisation'  />
             <OrganisationListTable data={data} limit={limit} page={page} setPage={setPage} setLimit={setLimit} changeData={changeData} setOrganisation={props.setOrganisation} head={head}  />
         </div>

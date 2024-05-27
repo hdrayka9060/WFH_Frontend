@@ -2,8 +2,7 @@ import { useState,useEffect } from 'react';
 import { Table,Tooltip, Whisper,Pagination} from 'rsuite';
 import styles from './OrganiasationsListTable.module.scss';
 import Icon from '../../atoms/Icon/index';
-import MessagePopup from '../../molecules/Message/index';
-import { TablePlotProps,TypeAttributes, SystemOrganisationDataTableResponseObject, AcceptRejectDeleteResponse,SystemOrganisationDataTableData } from './OrganiasationsListTable.types';
+import { TablePlotProps, AcceptRejectDeleteResponse, SystemOrganisationDataTableResponseObject } from './OrganiasationsListTable.types';
 import deleteIcon from '../../resources/delete.png';
 import editIcon from '../../resources/edit.png'
 import viewIcon from '../../resources/show.png'
@@ -42,26 +41,16 @@ function OrganisationListTable (props:TablePlotProps){
     }
 
 
-    const [toggleMessage,changeToggleMessage]=useState<boolean>(false);
-    const [messageType,changeMessageType]=useState<TypeAttributes.Status>('info');
-    const [messageHead,changeMessageHead]=useState<string>("");
-    const [messageMessage,changeMessageMessage]=useState<string>("");
-
-    const setToggleMessage=(type:TypeAttributes.Status, head:string, message:string)=>{
-        changeToggleMessage(true);
-        changeMessageType(type);
-        changeMessageHead(head);
-        changeMessageMessage(message);
-        setTimeout(()=>changeToggleMessage(false),1000);
-    }
-
     const fetchTableData =async (page:number,limit:number)=>{
 			props.setPage(page);
 			props.setLimit(limit)
         // console.log("Fetching Table Data");
         const res:SystemOrganisationDataTableResponseObject=await requestSystemUserOrganisations(page,limit,token);
-        // console.log("res",res)
-				if(res.status===200){props.changeData(res.data);changeTotalRecords(res.totalRecords);}
+        if(res.error){
+					toast.error(res.message);
+					console.error(res.error);
+				}
+				else if(res.ok){props.changeData(res.data);changeTotalRecords(res.totalRecords);}
         else toast.error(res.message);
     }
 
@@ -101,7 +90,11 @@ function OrganisationListTable (props:TablePlotProps){
     const handleDeleteOrganisation=async (organisation:string)=>{
             // console.log(organisation)
             const res:AcceptRejectDeleteResponse =await deleteOrganisations(organisation,token);
-            if(res.status===200){
+            if(res.error){
+							toast.error(res.message);
+							console.error(res.error);
+						}
+						else if(res.ok){
                 await fetchTableData(1,props.limit);
             }
             else toast.error(res.message);
@@ -113,7 +106,6 @@ function OrganisationListTable (props:TablePlotProps){
     return(
         <>
         <ToastContainer/>
-        {toggleMessage?<MessagePopup type={messageType} head={messageHead} message={messageMessage}/>:<></>}
         {toggleEditOrganisation?
                 <EditOrganisationPopup
 										limit={props.limit}
@@ -126,7 +118,6 @@ function OrganisationListTable (props:TablePlotProps){
                     organisationAdmin={organisationAdmin}
                     organisationMaxWfh={organisationMaxWfh}
                     setToggle={setToggleEditOrganisation}
-                    setMessage={setToggleMessage}
                 />
         :<></>}
 

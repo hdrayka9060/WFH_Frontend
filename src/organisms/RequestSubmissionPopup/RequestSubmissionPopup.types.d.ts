@@ -4,10 +4,10 @@ export declare namespace TypeAttributes {
 
 export interface RequestSubmissionPopupProps{
     setToggle:() => void,
-    setMessage:(type:STATUS,head:string,message:string)=> void
     availedAt:Date,
     changeCalanderData:(data:CalendarData[])=>void,
     toggle:boolean,
     wfh:number,
-    maxWfh:number
+    maxWfh:number,
+		changeWfh:(value:number)=>void
 }

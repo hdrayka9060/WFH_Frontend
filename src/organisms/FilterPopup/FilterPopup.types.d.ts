@@ -1,6 +1,5 @@
 export interface FilterPopupProps{
     setToggle:() => void,
-    setMessage:(type:STATUS,head:string,message:string)=> void,
     changeData:(data:SystemOrganisationDataTableData[])=>void,
     toggle:boolean,
     changeIsFilterPending:(value:boolean)=>void,
@@ -20,14 +19,16 @@ export interface AdminRequestsListTableData{
 }
 
 export interface AdminRequestsListTableResponseObject{
-		status:number,
+		error:string,
+		ok:boolean,
     data:AdminRequestsListTableData[],
     message:string,
 		totalRecords:number
 }
 
 export interface GetUsersResponse{
-    status:number,
+		error:string,
+		ok:boolean,
     message:string,
     data:string[]
 }

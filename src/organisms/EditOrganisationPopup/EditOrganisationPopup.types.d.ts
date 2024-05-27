@@ -10,7 +10,8 @@ export interface SystemOrganisationDataTableData{
 }
 
 export interface SystemOrganisationDataTableResponseObject{
-    status:number,
+		error:string,
+		ok:boolean,
     data:SystemOrganisationDataTableData[],
     message:string,
 		totalRecords:number
@@ -18,7 +19,6 @@ export interface SystemOrganisationDataTableResponseObject{
 
 export interface EditOrganisationPopupProps{
     setToggle:() => void,
-    setMessage:(type:STATUS,head:string,message:string)=> void,
     organisationUniqueName:string,
     organisationDisplayName:string,
     organisationAdmin:string,

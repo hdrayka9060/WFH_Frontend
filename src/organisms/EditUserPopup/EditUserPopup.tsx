@@ -16,12 +16,16 @@ function EditUserPopup(props:EditUserPopupProps){
     const [userEmail,changeUserEmail]=useState<string>(props.userEmail);
     const [firstName,changeFirstName]=useState<string>(props.firstName);
     const [lastName,changeLastName]=useState<string>(props.lastName);
-    const [dateOfBirth,changeDateOfBirth]=useState<Date|null>(props.dateOfBirth);
+    const [dateOfBirth,changeDateOfBirth]=useState<Date|null>(new Date(props.dateOfBirth));
 
     const fetchTableData =async ()=>{
         console.log("Fetching Table Data");
         const res:SystemOrganisationDataTableResponseObject=await viewOrganisations(props.organisation,props.page,props.limit,token);
-        if(res.status===200)props.changeData(res.data);
+        if(res.error){
+					toast.error(res.message);
+					console.error(res.error);
+				}
+				else if(res.ok)props.changeData(res.data);
     }
 
     const validateEmail=():boolean=>{
@@ -56,13 +60,16 @@ function EditUserPopup(props:EditUserPopupProps){
         console.log("obj",obj);
 
         const res=await editUser(obj,token);
-        console.log("res",res);
-        if(res.status===200){
+				if(res.error){
+					toast.error(res.message);
+					console.error(res.error);
+				}
+        else if(res.ok){
             toast.success(res.message)
             await fetchTableData();
             props.setToggle();
         }
-        else if(res.status===400)toast.error(res.message);
+        else if(!res.ok)toast.error(res.message);
         else toast.error('Someting went wrong');
     };
 
@@ -92,7 +99,7 @@ function EditUserPopup(props:EditUserPopupProps){
 
                 <Stack.Item>
                     <label>Date of Birth</label>
-                    <DatePicker value={dateOfBirth} limitEndYear={new Date().getFullYear()} onChangeCalendarDate={(e)=>changeDateOfBirth(e)} editable={true} defaultValue={new Date(props.dateOfBirth)} disabledDate={(date)=>{return (!date || date>new Date());}} onChange={(e)=>changeDateOfBirth(e)}	  placeholder="Date of Birth" className={cx('datePicker')} />
+                    <DatePicker value={dateOfBirth} limitEndYear={new Date().getFullYear()}  onChangeCalendarDate={(e)=>changeDateOfBirth(e)} editable={true} disabledDate={(date)=>{return (!date || date>(new Date(2011,0,1)));}} onChange={(e)=>changeDateOfBirth(e)}	  placeholder="Date of Birth" className={cx('datePicker')} />
 
                 </Stack.Item>
             </Stack>

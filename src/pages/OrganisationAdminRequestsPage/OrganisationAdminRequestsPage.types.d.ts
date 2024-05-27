@@ -1,5 +1,8 @@
 export interface OrganisationAdminRequestsPagePorps{
-
+	wfh:number,
+	maxWfh:number,
+	changeWfh:(value:number)=>void,
+	changeMaxWfh:(value:number)=>void
 }
 
 export interface SystemOrganisationDataTableData{

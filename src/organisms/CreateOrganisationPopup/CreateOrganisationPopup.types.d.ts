@@ -4,7 +4,6 @@ export declare namespace TypeAttributes {
 
 export interface CreateOrganisationPopupProps{
     setToggle:() => void,
-    setMessage:(type:STATUS,head:string,message:string)=> void,
     changeData:(data:SystemOrganisationDataTableData[])=>void,
     toggle:boolean,
 		limit:number,
@@ -19,7 +18,8 @@ export interface SystemOrganisationDataTableData{
 }
 
 export interface SystemOrganisationDataTableResponseObject{
-    status:number,
+		error:string,
+		ok:boolean,
     data:SystemOrganisationDataTableData[],
     message:string,
 		totalRecords:number

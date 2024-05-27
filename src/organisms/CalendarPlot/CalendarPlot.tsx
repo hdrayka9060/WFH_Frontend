@@ -1,9 +1,8 @@
 import { useState,useEffect } from 'react';
 import { Calendar } from 'rsuite';
 import styles from './CalendarPlot.module.scss'
-import MessagePopup from '../../molecules/Message/index';
 
-import {TypeAttributes,CalenderPlotProps, CalendarData} from './CalendarPlot.types'
+import {CalenderPlotProps, CalendarData} from './CalendarPlot.types'
 import RequestStatusPopup from '../../molecules/RequestStatusPopup/index';
 import RequestSubmissionPopup from '../RequestSubmissionPopup/index';
 import { requestCalenderData } from '../../services/OrganisationUserApi';
@@ -15,9 +14,6 @@ const cx=classNames.bind(styles);
 
 function CalendarPlot (props:CalenderPlotProps){
 
-    const [wfh,changeWfh]=useState<number>(0);
-    const [maxWfh,changeMaxWfh]=useState<number>(0);
-
     const [selectedDate,changeSelectedDate]=useState<Date>(new Date());
     const [selectedDateAvailedAt,changeSelectedDateAvailedAt]=useState<Date>(new Date());
     const [selectedDateCreatedAt,changeSelectedDateCreatedAt]=useState<Date>(new Date());
@@ -26,55 +22,43 @@ function CalendarPlot (props:CalenderPlotProps){
     const [selectedDateRejectionReason,changeSelectedDateRejectionReason]=useState<string>("");
     const [selectedDateApprovalAt,changeSelectedDateApprovalAT]=useState<Date>(new Date());
 
-    const [toggleMessage,changeToggleMessage]=useState<boolean>(false);
     const [toggleRequestSubmission,changeToggleRequestSubmission]=useState<boolean>(false);
     const [toggleRequestStatus,changeToggleRequestStatus]=useState<boolean>(false);
-
-    const [messageType,changeMessageType]=useState<TypeAttributes.Status>('info');
-    const [messageHead,changeMessageHead]=useState<string>("");
-    const [messageMessage,changeMessageMessage]=useState<string>("");
 
     const [calendarData,changeCalanderData]=useState<CalendarData[]>([{availedAt:new Date(), createdAt:new Date(), approvalAt:new Date(), wfhReason:"",rejectionReason:"", requestStatus:"pending"}]);
 
     const setToggleRequestSubmission=()=>{changeToggleRequestSubmission(!toggleRequestSubmission);};
     const setToggleRequestStatus=()=>{changeToggleRequestStatus(!toggleRequestStatus);};
-    const setToggleMessage=(type:TypeAttributes.Status, head:string, message:string)=>{
-        changeToggleMessage(true);
-        changeMessageType(type);
-        changeMessageHead(head);
-        changeMessageMessage(message);
-        setTimeout(()=>changeToggleMessage(false),1000);
-    }
 
 
     const token=Cookies.get('token');
 
-    const fetchCalenderData=async()=>{
-				// console.log('token',token)
-        const res=await requestCalenderData(token);
-				// console.log('res',res);
-        if(res.status===200){
+    const fetchCalenderData=async(year:number,month:number)=>{
+        const res=await requestCalenderData(year,month,token);
+				if(res.error){
+					toast.error(res.message);
+					console.error(res.error);
+				}
+        else if(res.ok){
             changeCalanderData(res.data);
-            changeWfh(res.wfh);
-            changeMaxWfh(res.maxWfh);
+						let wfh=0;
+						for(let i=0;i<res.data.length;i++){
+							if(res.data[i]['requestStatus']!=="Rejected")wfh+=1;
+						}
+            props.changeWfh(wfh);
+            props.changeMaxWfh(res.maxWfh);
         }
         else toast.error(res.message);
     }
 
-    useEffect(()=>{fetchCalenderData();},[]);
+    useEffect(()=>{fetchCalenderData(new Date().getFullYear(),new Date().getMonth());},[]);
 
 
     function renderCell(date:Date) {
         for(let i=0;i<calendarData.length;i++){
             const availedDate=new Date(calendarData[i].availedAt);
             if(date.getDate()===availedDate.getDate() && date.getMonth()===availedDate.getMonth() && date.getFullYear()===availedDate.getFullYear()){
-                return (
-                  <ul className={cx('ul')}>
-                        <li className={cx('li')}>
-                         <b>{calendarData[i]['requestStatus']}</b>
-                      </li>
-                  </ul>
-                );
+                return (<b className={cx('ul')}>{calendarData[i]['requestStatus']}</b>);
             }
         }
     }
@@ -116,16 +100,31 @@ function CalendarPlot (props:CalenderPlotProps){
         return;
     };
 
+		const handleDisabledDates=(date:Date)=>{
+			for(let i=0;i<calendarData.length;i++){
+				const availedDate=new Date(calendarData[i]['availedAt']);
+				if(date.getDate()===availedDate.getDate() && date.getMonth()===availedDate.getMonth() && date.getFullYear()===availedDate.getFullYear()){
+					return false;
+				}
+			}
+            const today=new Date();
+            today.setHours(0,0,0,0);
+			return date<today;
+		}
+
+		const handleMonthChange=async (date:Date)=>{
+			await fetchCalenderData(date.getFullYear(),date.getMonth())
+		}
+
 
     return(
         <>
         <ToastContainer />
-        {toggleMessage?<MessagePopup type={messageType} head={messageHead} message={messageMessage}/>:<></>}
         {toggleRequestStatus?
-                <RequestStatusPopup toggle={toggleRequestStatus} availedAt={selectedDateAvailedAt} createdAt={selectedDateCreatedAt} approvalAt={selectedDateApprovalAt} rejectionReason={selectedDateRejectionReason} submissionReason={selectedDateSubmissionReason} requestStatus={selectedDateRequestStatus} setToggle={setToggleRequestStatus} setMessage={setToggleMessage}  />
+                <RequestStatusPopup toggle={toggleRequestStatus} availedAt={selectedDateAvailedAt} createdAt={selectedDateCreatedAt} approvalAt={selectedDateApprovalAt} rejectionReason={selectedDateRejectionReason} submissionReason={selectedDateSubmissionReason} requestStatus={selectedDateRequestStatus} setToggle={setToggleRequestStatus}   />
         :<></>}
         {toggleRequestSubmission?
-                <RequestSubmissionPopup wfh={wfh} maxWfh={maxWfh} toggle={toggleRequestSubmission} changeCalanderData={changeCalanderData} availedAt={selectedDate} setToggle={setToggleRequestSubmission} setMessage={setToggleMessage}  />
+                <RequestSubmissionPopup changeWfh={props.changeWfh} wfh={props.wfh} maxWfh={props.maxWfh} toggle={toggleRequestSubmission} changeCalanderData={changeCalanderData} availedAt={selectedDate} setToggle={setToggleRequestSubmission}  />
         :<></>}
         <div>
             <style>
@@ -144,8 +143,7 @@ function CalendarPlot (props:CalenderPlotProps){
                     }
                 `}
             </style>
-            <Calendar  bordered cellClassName={customiseDate} onSelect={handleSeledtedDate} renderCell={renderCell} />
-            {/* <Calendar bordered  onSelect={hanndleSeledtedDate} renderCell={renderCell} /> */}
+            <Calendar  onMonthChange={handleMonthChange}  bordered cellClassName={customiseDate} onSelect={handleSeledtedDate} disabledDate={handleDisabledDates} renderCell={renderCell} />
         </div>
         </>
     );

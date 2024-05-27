@@ -2,8 +2,7 @@ import { useState,useEffect } from 'react';
 import { Table,Tooltip, Whisper,Pagination} from 'rsuite';
 import styles from './OrganiasationsDataTable.module.scss';
 import Icon from '../../atoms/Icon/index';
-import MessagePopup from '../../molecules/Message/index';
-import { TablePlotProps,TypeAttributes, SystemOrganisationDataTableResponseObject, AcceptRejectDeleteResponse } from './OrganiasationsDataTable.types';
+import { TablePlotProps, SystemOrganisationDataTableResponseObject, AcceptRejectDeleteResponse } from './OrganiasationsDataTable.types';
 
 import deleteIcon from '../../resources/delete.png';
 import editIcon from '../../resources/edit.png';
@@ -42,25 +41,16 @@ function OrganisationDataTable (props:TablePlotProps){
     const [lastName,changeLastName]=useState<string>("");
     const [dateOfBirth,changeDateOfBirth]=useState<Date>(new Date());
 
-    const [toggleMessage,changeToggleMessage]=useState<boolean>(false);
-    const [messageType,changeMessageType]=useState<TypeAttributes.Status>('info');
-    const [messageHead,changeMessageHead]=useState<string>("");
-    const [messageMessage,changeMessageMessage]=useState<string>("");
-
-    const setToggleMessage=(type:TypeAttributes.Status, head:string, message:string)=>{
-        changeToggleMessage(true);
-        changeMessageType(type);
-        changeMessageHead(head);
-        changeMessageMessage(message);
-        setTimeout(()=>changeToggleMessage(false),1000);
-    }
-
     const fetchTableData =async (page:number,limit:number)=>{
         // console.log("Fetching Table Data");
 				if(page!==props.page)props.setPage(page);
 				if(limit!==props.limit)props.setLimit(limit)
         const res:SystemOrganisationDataTableResponseObject=await viewOrganisations(org,page,limit,token);
-        if(res.status===200){props.changeData(res.data);changeTotalRecords(res.totalRecords);}
+        if(res.error){
+					toast.error(res.message);
+					console.error(res.error);
+				}
+				else if(res.ok){props.changeData(res.data);changeTotalRecords(res.totalRecords);}
         else toast.error(res.message);
     }
 
@@ -87,7 +77,11 @@ function OrganisationDataTable (props:TablePlotProps){
 
     const handleDeleteUser=async (organisationUserEmail:string)=>{
             const res:AcceptRejectDeleteResponse =await removeUser(org,organisationUserEmail,token);
-            if(res.status===200){
+            if(res.error){
+							toast.error(res.message);
+							console.error(res.error);
+						}
+						else if(res.ok){
                 await fetchTableData(1,props.limit);
             }
             else toast.error(res.message);
@@ -107,12 +101,10 @@ function OrganisationDataTable (props:TablePlotProps){
     return(
         <>
         <ToastContainer/>
-        {toggleMessage?<MessagePopup type={messageType} head={messageHead} message={messageMessage}/>:<></>}
         {toggleEditUser?<EditUserPopup
             toggle={toggleEditUser}
             setToggle={setToggleEditUser}
             changeData={props.changeData}
-            setMessage={setToggleMessage}
             organisation={org}
             userEmail={userEmail}
             firstName={firstName}
@@ -124,27 +116,27 @@ function OrganisationDataTable (props:TablePlotProps){
         <div>
             <Table className={cx('tablePlotTable')} height={600} wordWrap={true} defaultExpandAllRows={true} defaultSortType='asc' data={props.data} >
 
-                <Column width={150} flexGrow={1} align="center" fixed>
+                <Column flexGrow={1} align="center" fixed>
                     <HeaderCell>{head['id']}</HeaderCell>
                     <Cell dataKey='id' />
                 </Column>
 
-                <Column width={175} flexGrow={1.5}>
+                <Column flexGrow={1.5}>
                     <HeaderCell>{head['firstName']}</HeaderCell>
                     <Cell dataKey="firstName" />
                 </Column>
 
-                <Column width={175} flexGrow={1.5}>
+                <Column flexGrow={1.5}>
                     <HeaderCell>{head['lastName']}</HeaderCell>
                     <Cell dataKey="lastName" />
                 </Column>
 
-                <Column width={175} flexGrow={1.5}>
+                <Column flexGrow={1.5}>
                     <HeaderCell>{head['email']}</HeaderCell>
                     <Cell dataKey="userEmail" />
                 </Column>
 
-                <Column width={175} flexGrow={1.5}>
+                <Column flexGrow={1.5}>
                     <HeaderCell>{head['dateOfJoining']}</HeaderCell>
                     <Cell>
                         {
@@ -156,7 +148,7 @@ function OrganisationDataTable (props:TablePlotProps){
                     </Cell>
                 </Column>
 
-                <Column width={175} flexGrow={1.5}>
+                <Column flexGrow={1.5}>
                     <HeaderCell>{head['dateOfBirth']}</HeaderCell>
                     <Cell>
                         {
@@ -168,12 +160,12 @@ function OrganisationDataTable (props:TablePlotProps){
                     </Cell>
                 </Column>
 
-                <Column width={150} flexGrow={1.}>
+                {/* <Column flexGrow={1.}>
                     <HeaderCell>{head['wfh']}</HeaderCell>
                     <Cell dataKey="wfh" />
-                </Column>
+                </Column> */}
 
-                <Column width={300} flexGrow={2}>
+                <Column flexGrow={2}>
                     <HeaderCell>{head['action']}</HeaderCell>
                     <Cell>
                     {rowData => {
@@ -196,7 +188,7 @@ function OrganisationDataTable (props:TablePlotProps){
 																</Whisper>
 																<Whisper placement="top" controlId="control-id-hover" trigger="hover" speaker={deleteToolTip}>
                                 <div className={cx('iconHover')} onClick={handleDelete}>
-                                    <Icon icon={deleteIcon} altText='delete' width={15} />
+                                    <Icon icon={deleteIcon} altText='delete' width={15}/>
                                 </div>
 																</Whisper>
                                 </>

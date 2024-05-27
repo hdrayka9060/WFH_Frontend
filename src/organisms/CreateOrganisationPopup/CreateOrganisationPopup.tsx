@@ -20,8 +20,11 @@ function CreateOrganisationPopup(props:CreateOrganisationPopupProps){
     const fetchTableData =async ()=>{
         console.log("Fetching Table Data");
         const res:SystemOrganisationDataTableResponseObject=await requestSystemUserOrganisations(props.page,props.limit,token);
-        // console.log("res",res)
-        if(res.status===200)props.changeData(res.data);
+        if(res.error){
+					toast.error(res.message);
+					console.error(res.error);
+				}
+        else if(res.ok)props.changeData(res.data);
         else toast.error(res.message);
     }
 
@@ -38,13 +41,17 @@ function CreateOrganisationPopup(props:CreateOrganisationPopupProps){
             organisationMaxWfh:maxWfh
         }
         const res=await createOrganisation(obj,token);
-        if(res.status===200){
+				if(res.error){
+					toast.error(res.message);
+					console.error(res.error);
+				}
+        else if(res.ok){
             toast.success(res.message)
             toast.success(res.message)
             await fetchTableData();
             props.setToggle();
         }
-        else if(res.status===400)toast.error(res.message);
+        else if(!res.ok)toast.error(res.message);
         else toast.error("Something went wrong");
     };
 

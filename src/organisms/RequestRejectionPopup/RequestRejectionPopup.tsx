@@ -18,9 +18,12 @@ function RequestRejectionPopup(props:RequestRejectionPopupProps){
     const [requestRejectionReason,changeRequestRejectionReason]=useState<string>("");
 
     const fetchTableData =async ()=>{
-        // console.log("Fetching Table Data");
-        const res:SystemOrganisationDataTableResponseObject=await adminRequests(props.page,props.limit,token);
-        if(res.status===200){
+        const res:SystemOrganisationDataTableResponseObject=await adminRequests(token);
+        if(res.error){
+					toast.error(res.message);
+					console.error(res.error);
+				}
+				else if(res.ok){
             props.changeData(res.data);
         }
     }
@@ -31,10 +34,12 @@ function RequestRejectionPopup(props:RequestRejectionPopupProps){
             return;
         }
 
-
         const res=await adminRejectRequest(userEmail,availedAt,requestRejectionReason,token);
-        if(res.status===200){
-            // console.log('rejected',res,res.message)
+        if(res.error){
+					toast.error(res.message);
+					console.error(res.error);
+				}
+				else if(res.ok){
             await fetchTableData();
             setTimeout(()=>props.setToggle(),10)
             // props.setToggle()

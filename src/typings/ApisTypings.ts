@@ -1,20 +1,3 @@
-
-export interface TableData{
-    col1:string | number | Date,
-    col2:string | number | Date,
-    col3:string | number | Date,
-    col4:string | number | Date,
-    col5:string | number | Date,
-    col6:string | number | Date,
-    col7:string | number | Date,
-    col8:string | number | Date,
-}
-
-export interface TableResponseObject{
-    status:number,
-    data:TableData[]
-}
-
 export interface AdminRequestsListTableData{
     name:string,
     email:string,
@@ -26,10 +9,13 @@ export interface AdminRequestsListTableData{
 }
 
 export interface AdminRequestsListTableResponseObject{
-    status:number,
     data:AdminRequestsListTableData[],
     message:string,
-		totalRecords:number
+		totalRecords:number,
+		error:string,
+		ok:boolean,
+		// wfh:number,
+    // maxWfh:number
 }
 
 
@@ -44,7 +30,8 @@ export interface SystemOrganisationDataTableData{
 }
 
 export interface SystemOrganisationDataTableResponseObject{
-    status:number,
+    error:string,
+	  ok:boolean,
     data:SystemOrganisationDataTableData[],
     message:string,
 		totalRecords:number
@@ -58,35 +45,41 @@ export interface SystemOrganisationListTableData{
 }
 
 export interface SystemOrganisationListTableResponseObject{
-    status:number,
+    error:string,
+	  ok:boolean,
     data:SystemOrganisationListTableData[],
     message:string,
 		totalRecords:number
 }
 
 export interface SystemVerificationResponseObject{
-    status:number,
+    error:string,
+	  ok:boolean,
     message:string
 }
 
 export interface AcceptRejectDeleteResponse {
-    status:number,
+    error:string,
+	  ok:boolean,
     message:string
 }
 
 export interface VerifyUser{
-    status:number,
+    error:string,
+	  ok:boolean,
     admin:string
 }
 
 export interface OtpResponse{
-    status:number,
+    error:string,
+	  ok:boolean,
     message:string,
     token:string
 }
 
 export interface GetOrganisationsResponse{
-    status:number,
+    error:string,
+	  ok:boolean,
     message:string,
     data:string[]
 }
@@ -132,21 +125,24 @@ export interface CalendarData{
 }
 
 export interface CalendarResponse{
-    status:number,
+    error:string,
+	  ok:boolean,
     data:CalendarData[],
     message:string,
-    wfh:number,
+    // wfh:number,
     maxWfh:number
 }
 
 export interface GetUsersResponse{
-    status:number,
+	error:string,
+	ok:boolean,
     message:string,
     data:string[]
 }
 
 export interface GetUserWfhResponse{
-    status:number,
+    error:string,
+	  ok:boolean,
     message:string,
     wfh:number,
     maxWfh:number

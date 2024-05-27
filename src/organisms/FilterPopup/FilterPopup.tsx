@@ -17,7 +17,11 @@ function FilterPopup(props:FilterPopupProps){
 
     async function getUsersList() {
         const res:GetUsersResponse=await getUsers(token);
-        if(res.status===200){
+				if(res.error){
+					toast.error(res.message);
+					console.error(res.error);
+				}
+        else if(res.ok){
             changeUsersList(res.data);
         }
         else toast.error(res.message);
@@ -37,10 +41,13 @@ function FilterPopup(props:FilterPopupProps){
         }
         let date;
         if(selectedDate)date=new Date(selectedDate.getFullYear(),selectedDate.getMonth(),selectedDate.getDate(),0,0,0,0);
-        const res:AdminRequestsListTableResponseObject=await adminFilterRequests(filterType,requestStatus,user,date,props.page,props.limit,token);
-        // console.log(res);
-        if(res.status===200){
-            // console.log("")
+        // const res:AdminRequestsListTableResponseObject=await adminFilterRequests(filterType,requestStatus,user,date,props.page,props.limit,token);
+        const res:AdminRequestsListTableResponseObject=await adminFilterRequests(filterType,requestStatus,user,date,token);
+        if(res.error){
+					toast.error(res.message);
+					console.error(res.error);
+				}
+        else if(res.ok){
             props.changeData(res.data);
             props.setToggle();
             if(filterType==='Request Status' && requestStatus==='Pending')props.changeIsFilterPending(true);

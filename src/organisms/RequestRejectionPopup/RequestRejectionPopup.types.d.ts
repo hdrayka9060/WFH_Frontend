@@ -4,17 +4,18 @@ export declare namespace TypeAttributes {
 
 export interface RequestRejectionPopupProps{
     setToggle:() => void,
-    setMessage:(type:STATUS,head:string,message:string)=> void,
     availedAt:Date,
     userEmail:string,
     changeData:(data:SystemOrganisationDataTableData[])=>void,
     toggle:boolean,
 		page:number,
-		limit:number
+		limit:number,
+		wfh:number,
 }
 
 export interface SystemOrganisationDataTableResponseObject{
-    status:number,
+		error:string,
+		ok:boolean,
     data:SystemOrganisationDataTableData[],
     message:string,
 		totalRecords:number

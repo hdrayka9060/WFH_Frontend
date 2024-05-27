@@ -16,10 +16,17 @@ function RequestSubmissionPopup(props:RequestSubmissionPopupProps){
     const [requestSubmissionReason,changeRequestSubmissionReason]=useState<string>("");
 
     const fetchCalenderData=async()=>{
-        const res=await requestCalenderData(token);
-        if(res.status===200){
+        const res=await requestCalenderData(props.availedAt.getFullYear(),props.availedAt.getMonth(),token);
+        if(res.error){
+					toast.error(res.message);
+					console.error(res.error);
+				}
+				else if(res.ok){
             props.changeCalanderData(res.data);
         }
+				else {
+					console.log("error",res)
+				}
     }
 
     const handleSubmit=async ()=>{
@@ -37,8 +44,13 @@ function RequestSubmissionPopup(props:RequestSubmissionPopupProps){
 
         // console.log(availedAt,requestSubmissionReason);
         const res=await requestWfh(availedAt,requestSubmissionReason,token);
-        if(res.status===200){
+        if(res.error){
+					toast.error(res.message);
+					console.error(res.error);
+				}
+				else if(res.ok){
             await fetchCalenderData();
+						props.changeWfh(props.wfh+1);
             props.setToggle()
         }
         else toast.error(res.message);

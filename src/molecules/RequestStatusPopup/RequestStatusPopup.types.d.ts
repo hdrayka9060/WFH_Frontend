@@ -4,7 +4,6 @@ export declare namespace TypeAttributes {
 
 export interface RequestStatusPopupProps{
     setToggle:() => void,
-    setMessage:(type:STATUS,head:string,message:string)=> void,
     availedAt: Date,
     createdAt: Date,
     approvalAt: Date,

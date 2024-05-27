@@ -27,7 +27,7 @@ function SystemUserOrganisationPage (props:SystemUserOrganisationPageProps){
     else org=`${Cookies.get('organisation')}`;
     return(
         <div>
-            <NavBar userType='system'/>
+            <NavBar wfh={0} maxWfh={0} userType='system'/>
             <PageHeader limit={limit} page={page} setPage={setPage} setLimit={setLimit} changeData={changeData} changeIsFilterPending={()=>{}}  organisation={org} toggleWhat='addUser' addbutton={true} pageHeading={org} addButtonText='Add User' />
             <OrganisationDataTable limit={limit} page={page} setPage={setPage} setLimit={setLimit} data={data} changeData={changeData} organisation={org} head={head}  />
         </div>

@@ -3,9 +3,10 @@ import { AcceptRejectDeleteResponse, CalendarResponse, AdminRequestsListTableRes
 
 
 // Admin requests
-export const adminRequests = async (page:number,limit:number,token:string|undefined): Promise<AdminRequestsListTableResponseObject> => {
-    let response = await axios.post('http://localhost:8080/admin/requestlist',{page:page,limit:limit},{headers:{Authorization:`bearer ${token}`}})
-		return response.data;
+export const adminRequests = async (token:string|undefined): Promise<AdminRequestsListTableResponseObject> => {
+	let response = await axios.get('http://localhost:8080/admin/requestlist',{headers:{Authorization:`bearer ${token}`}})
+	console.log(response)
+	return response.data;
 }
 
 // Get Users List
@@ -15,8 +16,8 @@ export const getUsers = async (token:string|undefined): Promise<GetUsersResponse
 }
 
 // Admin filter requests
-export const adminFilterRequests = async (filterType:string|null,requestStatus:string|null,user:string,date:Date|null|undefined,page:number,limit:number,token:string|undefined): Promise<AdminRequestsListTableResponseObject> => {
-    let response = await axios.post('http://localhost:8080/admin/filter-requestlist', {filterType,requestStatus,user,date,page,limit },{headers:{Authorization:`bearer ${token}`}})
+export const adminFilterRequests = async (filterType:string|null,requestStatus:string|null,user:string,date:Date|null|undefined,token:string|undefined): Promise<AdminRequestsListTableResponseObject> => {
+    let response = await axios.post('http://localhost:8080/admin/filter-requestlist', {filterType,requestStatus,user,date },{headers:{Authorization:`bearer ${token}`}})
     return response.data;
 }
 
@@ -40,8 +41,8 @@ export const requestWfh = async (availedAt: Date | undefined, requestSubmissionR
 }
 
 //Calender
-export const requestCalenderData = async (token:string|undefined): Promise<CalendarResponse> => {
-    let response = await axios.get('http://localhost:8080/user/calender',{headers:{Authorization:`bearer ${token}`}})
+export const requestCalenderData = async (year:number,month:number,token:string|undefined): Promise<CalendarResponse> => {
+    let response = await axios.post('http://localhost:8080/user/calender',{year,month},{headers:{Authorization:`bearer ${token}`}})
 		return response.data;
 }
 

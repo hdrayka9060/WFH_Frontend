@@ -1,9 +1,8 @@
-export declare namespace TypeAttributes {
-    type Status = 'success' | 'warning' | 'error' | 'info';
-}
-
 export interface CalenderPlotProps{
-
+	changeWfh:(value:number)=>void,
+	changeMaxWfh:(value:number)=>void,
+	wfh:number,
+	maxWfh:number
 }
 
 export interface CalendarData{

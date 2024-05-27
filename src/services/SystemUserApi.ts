@@ -1,4 +1,4 @@
-import {AcceptRejectDeleteResponse,EditOrganisationParameters, CreateOrganisationParameters, AddUserParameters,SystemOrganisationListTableResponseObject,SystemOrganisationDataTableResponseObject,SystemVerificationResponseObject, EditUserParameters, GetOrganisationsResponse} from '../typings/ApisTypings';
+import {AcceptRejectDeleteResponse,EditOrganisationParameters, CreateOrganisationParameters, AddUserParameters,SystemOrganisationListTableResponseObject,SystemOrganisationDataTableResponseObject, EditUserParameters, GetOrganisationsResponse} from '../typings/ApisTypings';
 import axios from 'axios';
 
 // System user organisations
@@ -24,7 +24,8 @@ export const viewOrganisations= async (organisationUniqueName:string|undefined,p
 // Create organisations
 export const createOrganisation= async (obj:CreateOrganisationParameters,token:string|undefined):Promise<AcceptRejectDeleteResponse>=>{
     let response=await axios.post('http://localhost:8080/system/create', obj,{headers:{Authorization:`bearer ${token}`}});
-    return response.data;
+    console.log(response)
+		return response.data;
 }
 
 // Edit organisations

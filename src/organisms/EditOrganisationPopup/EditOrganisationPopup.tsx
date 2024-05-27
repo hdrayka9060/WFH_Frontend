@@ -12,7 +12,6 @@ const cx=classNames.bind(styles);
 
 function EditOrganisationPopup(props:EditOrganisationPopupProps){
 
-    const email=Cookies.get('email');
     const token=Cookies.get('token');
 
 		const [users,changeUsers]=useState<string[]>([''])
@@ -28,16 +27,22 @@ function EditOrganisationPopup(props:EditOrganisationPopupProps){
     const fetchTableData =async (email:string)=>{
         console.log("Fetching Table Data");
         const res:SystemOrganisationDataTableResponseObject=await requestSystemUserOrganisations(props.page,props.limit,token);
-        // console.log("res",email,res)
-        if(res.status===200)props.changeData(res.data);
+        if(res.error){
+					toast.error(res.message);
+					console.error(res.error);
+				}
+        else if(res.ok)props.changeData(res.data);
         else toast.error(res.message)
     }
 
 		const fetchUsers=async ()=>{
 			const res=await getOrganisationUsers(props.organisationUniqueName,token);
-			if(res.status===200)changeUsers(res.data);
+			if(res.error){
+				toast.error(res.message);
+				console.error(res.error);
+			}
+			else if(res.ok)changeUsers(res.data);
 			else toast.error(res.message)
-			// console.log("res2",res)
 		}
 
 		useEffect(()=>{fetchUsers()},[])
@@ -69,12 +74,16 @@ function EditOrganisationPopup(props:EditOrganisationPopupProps){
 
         // console.log(obj);
         const res=await editOrganisation(obj,token);
-        if(res.status===200){
+				if(res.error){
+					toast.error(res.message);
+					console.error(res.error);
+				}
+        else if(res.ok){
             toast.success(res.message)
             await fetchTableData(`${props.email}`);
             props.setToggle();
         }
-        else if(res.status===400)toast.error(res.message);
+        else if(!res.ok)toast.error(res.message);
         else toast.error("Something went wrong")
     };
 
