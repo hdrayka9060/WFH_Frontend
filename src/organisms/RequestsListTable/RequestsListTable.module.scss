@@ -1,0 +1,35 @@
+.tablePlotDiv{
+    margin: 5px 0px;
+}
+
+.actionButton{
+    margin:0px 10px;
+    width: 75px;
+    font-weight: 550;
+    height: 30px;
+}
+
+// .actionButton:hover{
+//     cursor: pointer;
+//     scale: 1.1;
+// }
+
+.iconHover{
+    // border: 1px solid black;
+    // margin-bottom: 10px;
+}
+
+.iconHover:hover{
+    cursor: pointer;
+    scale: 1.2;
+}
+
+
+.popupToggleDiv{
+    position: absolute;
+    border: 1px solid black;
+    background-color: rgba(130, 130, 130, 0.3);
+    z-index: 10;
+    width: 100vw;
+    height: 100vh;
+}

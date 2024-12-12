@@ -1,0 +1,2 @@
+import OrganisationAdminRequestsPage from "./OrganisationAdminRequestsPage";
+export default OrganisationAdminRequestsPage

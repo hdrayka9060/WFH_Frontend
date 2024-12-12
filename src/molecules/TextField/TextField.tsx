@@ -1,8 +1,6 @@
-import styles from './TextField.module.scss'
-
 import { Form} from 'rsuite';
 
-export default function (props:TextFieldProps) {
+function TextField (props:TextFieldProps) {
     const { name, label, accepter, ...rest } = props;
     return (
       <Form.Group controlId={`${name}-3`}>
@@ -11,3 +9,5 @@ export default function (props:TextFieldProps) {
       </Form.Group>
     );
   }
+
+export default TextField;

@@ -1,11 +1,9 @@
-import styles from './SystemUserLoginPage.module.scss';
-
-import LoginForm from '../../organisms/LoginForm/LoginForm';
+import LoginForm from '../../organisms/LoginForm/index';
 
 function SystemUserLoginPage (props:SystemUserLoginPageProps){
     return(
         <div>
-            <LoginForm  userType="system" />
+            <LoginForm userType="system" />
         </div>
     );
 
